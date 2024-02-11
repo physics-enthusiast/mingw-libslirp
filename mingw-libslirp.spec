@@ -73,6 +73,8 @@ export DESTDIR=%{buildroot}
 %license COPYRIGHT
 %{mingw32_bindir}/libslirp-0.dll
 %{mingw32_libdir}/libslirp.dll.a
+%{mingw32_includedir}/slirp/libslirp-version.h
+%{mingw32_includedir}/slirp/libslirp.h
 %{mingw32_libdir}/pkgconfig/slirp.pc
  
 # Win64
@@ -80,6 +82,8 @@ export DESTDIR=%{buildroot}
 %license COPYRIGHT
 %{mingw64_bindir}/libslirp-0.dll
 %{mingw64_libdir}/libslirp.dll.a
+%{mingw64_includedir}/slirp/libslirp-version.h
+%{mingw64_includedir}/slirp/libslirp.h
 %{mingw64_libdir}/pkgconfig/slirp.pc
  
 %changelog
