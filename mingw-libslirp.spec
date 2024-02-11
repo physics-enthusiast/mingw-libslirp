@@ -61,9 +61,7 @@ This is the MinGW build of Libslirp
 %autosetup -p1 -n libslirp-v%{version}
 
 %build
-%mingw_meson \
-  -Dintrospection=disabled
-
+%mingw_meson
 %mingw_ninja
 
 %install
