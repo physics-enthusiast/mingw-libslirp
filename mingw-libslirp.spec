@@ -83,5 +83,5 @@ export DESTDIR=%{buildroot}
 %{mingw64_libdir}/pkgconfig/slirp.pc
  
 %changelog
-* Sun Feb 11 2024 Placeholder <placeholder@email.org> - 2.25.5-1
+* Sun Feb 11 2024 Placeholder <placeholder@email.org> - 4.7.0-1
 - Initial release 
