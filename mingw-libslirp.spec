@@ -58,7 +58,7 @@ This is the MinGW build of Libslirp
  
  
 %prep
-%setup -q -n libslirp-%{version}
+%autosetup -p1 -n libslirp-v%{version}
 
 %build
 %mingw_meson \
