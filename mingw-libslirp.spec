@@ -68,10 +68,8 @@ This is the MinGW build of Libslirp
 export DESTDIR=%{buildroot}
 %mingw_ninja install
  
-%mingw_find_lang libslirp
- 
 # Win32
-%files -n mingw32-libslirp -f mingw32-libslirp.lang
+%files -n mingw32-libslirp
 %license COPYING
 %{mingw32_bindir}/libslirp-0.dll
 %{mingw32_includedir}/libslirp-version.h
@@ -81,7 +79,7 @@ export DESTDIR=%{buildroot}
 %{mingw32_libdir}/pkgconfig/slirp.pc
  
 # Win64
-%files -n mingw64-libslirp -f mingw64-libslirp.lang
+%files -n mingw64-libslirp
 %license COPYING
 %{mingw64_bindir}/libslirp-0.dll
 %{mingw64_includedir}/libslirp-version.h
