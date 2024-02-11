@@ -62,7 +62,6 @@ This is the MinGW build of Libslirp
 
 %build
 %mingw_meson \
-  -Ddefault_library=both \
   -Dintrospection=disabled
 
 %mingw_ninja
