@@ -28,7 +28,7 @@ jobs:
       - name: Generate environmental variables
         id: generate_env_vars
         run: |
-          echo "tag_name=qemu-${{ ( github.event_name == 'push' && 'test' ) || steps.get-version.outputs.ver }}" >> $GITHUB_OUTPUT
+          echo "tag_name=mingw-libslirp-${{ ( github.event_name == 'push' && 'test' ) || steps.get-version.outputs.ver }}" >> $GITHUB_OUTPUT
           echo "release_name=${{ ( github.event_name == 'push' && format('Test Build {0}', steps.get-version.outputs.ver) ) || format('Build {0}', steps.get-version.outputs.ver) }}" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
       - name: Check for existing tag
