@@ -46,15 +46,26 @@ jobs:
         run: |
           gh release create ${{ steps.generate_env_vars.outputs.tag_name }} --title "${{ steps.generate_env_vars.outputs.release_name }}" --generate-notes=false --draft=false --latest=false --prerelease=true
 
-  build:
+  builds:
+    needs: release
+    name: Build
     runs-on: ubuntu-latest
+    permissions: write-all
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ["fedora-38-x86_64", "fedora-39-x86_64", "fedora-40-x86_64"]
     steps:
-    - uses: actions/checkout@v4
-    - name: build RPM package
-      id: rpm
-      uses: physics-enthusiast/rpmbuild-spectool@master
-      with:
-        spec_file: "mingw-libslirp.spec"
-        target: "fedora-40-x86_64"
-    - run: |
-        ls -R
+      - uses: actions/checkout@v4
+      - name: build RPM package
+        id: rpm
+        uses: physics-enthusiast/rpmbuild-spectool@master
+        with:
+          spec_file: "mingw-libslirp.spec"
+          target: ${{ matrix.target }}
+      - name: Upload Installer
+        run: |
+          gh release upload ${{ needs.release.outputs.tag_name }} ${{ steps.rpm.outputs.rpm_dir_path }}/*.rpm --repo ${{ github.repository }}
+      - name: Set as latest
+        run: |
+          gh release edit ${{ needs.release.outputs.tag_name }} --draft=false --prerelease=false --latest=${{ github.event_name == 'workflow_dispatch' }} --repo ${{ github.repository }}
