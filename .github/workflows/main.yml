@@ -12,3 +12,5 @@ jobs:
       with:
         spec_file: "mingw-libslirp.spec"
         target: "fedora-40-x86_64"
+    - run: |
+        ls -R
