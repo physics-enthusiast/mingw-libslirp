@@ -1,7 +1,51 @@
 name: RPM Build
-on: push
+
+concurrency: 
+  group: ${{ ( github.event_name == 'push' && 'test' ) || 'release' }}
+  cancel-in-progress: true
+on:
+  workflow_dispatch:
+  push:
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions: write-all
+    outputs:
+      version: ${{ steps.get-version.outputs.ver }}
+      tag_name: ${{ steps.generate_env_vars.outputs.tag_name }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Get version
+        id: get-version
+        run: |
+          echo "ver=$(curl https://raw.githubusercontent.com/${{github.repository}}/${{github.sha}}/mingw-libslirp.spec | grep "Version" | cut -d":" -f2 | sed 's/^[ \t]*//;s/[ \t]*$//')" >> $GITHUB_OUTPUT
+      - name: Generate environmental variables
+        id: generate_env_vars
+        run: |
+          echo "tag_name=qemu-${{ ( github.event_name == 'push' && 'test' ) || steps.get-version.outputs.ver }}" >> $GITHUB_OUTPUT
+          echo "release_name=${{ ( github.event_name == 'push' && format('Test Build {0}', steps.get-version.outputs.ver) ) || format('Build {0}', steps.get-version.outputs.ver) }}" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v4
+      - name: Check for existing tag
+        id: check-tag
+        run: |
+          if gh release view "${{ steps.generate_env_vars.outputs.tag_name }}" -R ${{ github.repository }}; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Clear previous release
+        run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag -R ${{ github.repository }}
+        if: ${{ steps.check-tag.outputs.exists == 'true' }}
+      - name: Create new release
+        run: |
+          gh release create ${{ steps.generate_env_vars.outputs.tag_name }} --title "${{ steps.generate_env_vars.outputs.release_name }}" --generate-notes=false --draft=false --latest=false --prerelease=true
+
   build:
     runs-on: ubuntu-latest
     steps:
